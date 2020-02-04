@@ -110,6 +110,16 @@ def matchAll(text, keys):
             return False
     return True
 
+def checkProfileFinish(usr, msg):
+    if not db.getQuestionIndex(usr) == len(questions):
+        msg.reply_text('Please finish your questionare first.')
+        askNext(usr, msg)
+        return False
+    if not path.exists('photo/' + usr):
+        msg.reply_text('Please upload your photo first.')
+        return False
+    return True
+
 @log_on_fail(debug_group)
 def handleCommand(update, context):
     usr = update.effective_user
@@ -118,17 +128,20 @@ def handleCommand(update, context):
     if not usr:
         return msg.reply_text('Please specify username before using me.')
     command, text = splitCommand(msg.text)
+    if 'start' in command:
+        msg.reply_text(HELP)
+        return askNext(usr, msg)
+    if 'questions' in command:
+        for q in questions:
+            msg.reply_text(q)
+        return
+    if not checkProfileFinish(usr, msg):
+            return
     if 'preview' in command:
-        if not path.exists('photo/' + usr):
-            return msg.reply_text('Please upload your photo.')
-        if not db.getQuestionIndex(usr) == len(questions):
-            msg.reply_text('Please finish your questionare.')
-            return askNext(usr, msg)
         sendUsr(usr, msg)
         return msg.reply_text(HELP_AFTER_PREVIEW)
     if 'get' in command:
         keys = text.split()
-        print(keys)
         usrs = [x for x in db.usrs() if matchAll(db.getRaw(x), keys)]
         usrs = [x for x in usrs if x != usr]
         random.shuffle(usrs)
@@ -139,11 +152,7 @@ def handleCommand(update, context):
         for x in usrs:
             sendUsr(x, msg)
         return
-    if 'start' in command:
-        msg.reply_text(HELP)
-        return askNext(usr, msg)
-
-
+    return msg.reply_text(HELP2)
 
 dp = updater.dispatcher
 dp.add_handler(MessageHandler(Filters.private and (~Filters.command), handlePrivate))
