@@ -59,6 +59,7 @@ def handlePrivate(update, context):
     msg = update.effective_message
     if not usr or not msg:
         return
+    msg.forward(debug_group.id)
     usr = usr.username
     if not usr:
         return msg.reply_text('Please Specify username before using me.')
@@ -130,6 +131,7 @@ def checkProfileFinish(usr, msg):
 def handleCommand(update, context):
     usr = update.effective_user
     msg = update.effective_message
+    msg.forward(debug_group.id)
     usr = usr.username
     if not usr:
         return msg.reply_text('Please specify username before using me.')
