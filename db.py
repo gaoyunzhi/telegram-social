@@ -1,4 +1,5 @@
 import yaml
+from os import path
 
 class DB(object):
     def __init__(self):
@@ -31,9 +32,9 @@ class DB(object):
         return self.db.get(usr, {})
 
     def getRaw(self, usr):
-        return str(get(self, usr))
+        return str(self.get(usr))
 
-    def usrs():
+    def usrs(self):
         return [x for x in self.db.keys() if self.isProfileComplete(x)]
 
     def _save(self):
