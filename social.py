@@ -31,7 +31,7 @@ Language(s): %s
 Keywords: <b>%s</b>
 In the past 5 years: %s
 Contact: t.me/%s
-Contect Template: Hey, I have seen you by @friends_social_bot, I'm also very interested in %s. May we be friends?'''
+Contect Template: <i>Hey, I have seen you by @friends_social_bot, I'm also very interested in %s. May we be friends?</i>'''
 
 test_usr = 'b4cxb'
 test_usr_id = 420074357
