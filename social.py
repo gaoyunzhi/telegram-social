@@ -122,11 +122,6 @@ def handleCommand(update, context):
         for q in questions:
             msg.reply_text(q)
         return
-    if not checkProfileFinish(usr, msg):
-        return
-    if 'preview' in command:
-        sendUsr(usr, msg)
-        return msg.reply_text(strings['h3'])
     if 'get' in command:
         keys = text.split()
         usrs = [x for x in db.usrs() if matchAll(db.getRaw(x), keys)]
@@ -139,6 +134,11 @@ def handleCommand(update, context):
         for x in usrs:
             sendUsr(x, msg)
         return
+    if not checkProfileFinish(usr, msg):
+        return
+    if 'preview' in command:
+        sendUsr(usr, msg)
+        return msg.reply_text(strings['h3'])
     return msg.reply_text(strings['h2'])
 
 dp = updater.dispatcher
