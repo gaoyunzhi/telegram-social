@@ -21,6 +21,9 @@ class DB(object):
             else:
                 return i
 
+    def get(self,usr):
+        return self.db.get(usr, {})
+
     def _save(self):
         with open('mydb', 'w') as f:
             f.write(yaml.dump(self.db, sort_keys=True, indent=2, allow_unicode=True))

@@ -12,12 +12,19 @@ HELP = 'Welcome to social bot. We help people meet each other and make friends.'
 HELP2 = '''You have filled our questionare. Here are some command you may use:
 /preview: preview your profile
 /get: get a potential match
+/get keyword: get potential matches with keyword
 /questions: get the question list
 
 Reply any question to update your profile. 
 Upload any photo will overwrite your social profile photo.
 '''
-
+CAPTION = '''Here for: %s
+Age: %s
+Location: %s
+Language(s): %s
+Keywords: %s
+%s
+Contact: t.me/%s'''
 db = DB()
 
 with open('credential') as f:
@@ -39,7 +46,6 @@ def askNext(usr, msg):
 
 @log_on_fail(debug_group)
 def handlePrivate(update, context):
-    print(1)
     usr = update.effective_user
     msg = update.effective_message
     if not usr or not msg:
@@ -78,10 +84,26 @@ def handlePrivate(update, context):
     msg.reply_text('Your answer recorded.')
     return askNext(usr, msg)
 
+def getCaption(usr):
+    params = tuple([db.get(usr).get(x) for x in range(len(questions))] + [usr])
+    return CAPTION % params
+
 @log_on_fail(debug_group)
 def handleCommand(update, context):
-    print(2)
-    pass
+    usr = update.effective_user
+    msg = update.effective_message
+    usr = usr.username
+    if not usr:
+        return msg.reply_text('Please specify username before using me.')
+    command, text = splitCommand(msg.text)
+    if 'preview' in command:
+        if not path.exists('photo/' + usr):
+            return msg.reply_text('Please upload your photo.')
+        if not db.getQuestionIndex(usr) == len(questions):
+            msg.reply_text('Please finish your questionare.')
+            return askNext(usr, msg)
+        return msg.reply_photo(open('photo/' + usr), caption = getCaption(usr))
+
 
 dp = updater.dispatcher
 dp.add_handler(MessageHandler(Filters.private and (~Filters.command), handlePrivate))
