@@ -74,7 +74,7 @@ def handlePrivate(update, context):
         return askNext(usr, msg)
     if idx == len(questions):
         return msg.reply_text(HELP2)
-    db.save(user, idx, text)
+    db.save(usr, idx, text)
     msg.reply_text('Your answer recorded.')
     return askNext(usr, msg)
 

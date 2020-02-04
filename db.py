@@ -11,7 +11,8 @@ class DB(object):
         self._save()
 
     def getQuestionIndex(self, usr):
-        self.db[usr] = self.db.get(usr, {})
+        if not user in self.db:
+            return None
         i = 0
         while True:
             if i in self.db[usr]:
