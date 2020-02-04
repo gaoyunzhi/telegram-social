@@ -31,6 +31,7 @@ tele = updater.bot
 debug_group = tele.get_chat(-1001198682178)
 
 def askNext(usr, msg):
+    print('askNext')
     idx = db.getQuestionIndex(usr)
     if idx == len(questions):
         return
@@ -38,6 +39,7 @@ def askNext(usr, msg):
 
 @log_on_fail(debug_group)
 def handlePrivate(update, context):
+    print(1)
     usr = update.effective_user
     msg = update.effective_message
     if not usr or not msg:
@@ -55,10 +57,9 @@ def handlePrivate(update, context):
     if photo:
         photo[0].get_file().download('photo/' + usr)
         msg.reply_text('Received/updated your photo.')
-        return askNext(usr, msg)
-    text = msg.text
+    text = (msg.text or '').strip()
     if not text:
-        return
+        return askNext(usr, msg)
     if msg.reply_to_message:
         question = msg.reply_to_message.text
         if question in questions:
@@ -78,8 +79,9 @@ def handlePrivate(update, context):
 
 @log_on_fail(debug_group)
 def handleCommand(update, context):
+    print(2)
     pass
-    
+
 dp = updater.dispatcher
 dp.add_handler(MessageHandler(Filters.private and (~Filters.command), handlePrivate))
 dp.add_handler(MessageHandler(Filters.private and Filters.command, handleCommand))
