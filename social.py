@@ -56,7 +56,8 @@ def handlePrivate(update, context):
         photo = msg.photo
     if photo:
         photo[0].get_file().download('photo/' + usr)
-        msg.reply_text('Received/updated your photo.')
+        if msg.photo:
+            msg.reply_text('Received/updated your photo.')
     text = (msg.text or '').strip()
     if not text:
         return askNext(usr, msg)
