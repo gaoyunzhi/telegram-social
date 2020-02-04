@@ -20,7 +20,7 @@ with open('credential') as f:
 with open('en_string') as f:
     strings = yaml.load(f, Loader=yaml.FullLoader)
 
-questions = [strings['q' + str(x)] for x in range(1, 6)]
+questions = [strings['q' + str(x)] for x in range(1, db.NUM_Q)]
 
 updater = Updater(credential['token'], use_context=True)
 tele = updater.bot
@@ -28,7 +28,7 @@ debug_group = tele.get_chat(-1001198682178)
 
 def askNext(usr, msg):
     idx = db.getQuestionIndex(usr, ask=True)
-    if idx == len(questions):
+    if idx == db.NUM_Q:
         return msg.reply_text(strings['h2'])
     msg.reply_text(questions[idx])
 
@@ -67,14 +67,14 @@ def handlePrivate(update, context):
     if idx == None:
         msg.reply_text(strings['h1'])
         return askNext(usr, msg)
-    if idx == len(questions):
+    if idx == db.NUM_Q:
         return msg.reply_text(strings['h2'])
     db.save(usr, idx, text)
     msg.reply_text(strings['r'])
     return askNext(usr, msg)
 
 def getCaption(usr):
-    answers = [db.get(usr).get(x) for x in range(len(questions))]
+    answers = [db.get(usr).get(x) for x in range(db.NUM_Q)]
     params = tuple(answers + [usr, usr, answers[4]])
     return strings['c'] % params
 
@@ -97,7 +97,7 @@ def matchAll(text, keys):
     return True
 
 def checkProfileFinish(usr, msg):
-    if not db.getQuestionIndex(usr) == len(questions):
+    if not db.getQuestionIndex(usr) == db.NUM_Q:
         msg.reply_text(strings['e1'])
         askNext(usr, msg)
         return False
