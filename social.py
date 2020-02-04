@@ -11,37 +11,16 @@ import random
 
 LIMIT = 10
 
-HELP = 'Welcome to social bot. We help people meet each other and make friends.'
-HELP2 = '''You have filled our questionare. Here are some command you may use:
-/preview: preview your profile
-/get: get up to 10 potential matches 
-/get keyword: get up to 10 potential matches with keyword
-/questions: get the question list
-
-Reply any question to update your questionare. 
-Upload any photo will overwrite your social profile photo.'''
-HELP_AFTER_PREVIEW = '''/questions: get the question list
-
-Reply any question to update your questionare. 
-Upload any photo will overwrite your social profile photo.'''
-CAPTION = '''Here for: %s
-Age: %s
-Location: %s
-Language(s): %s
-Keywords: <b>%s</b>
-In the past 5 years: %s
-Contact: t.me/%s
-Contect Template: <i>Hey %s, I have seen you by @friends_social_bot, I'm also very interested in %s. May we be friends?</i>'''
-
 test_usr = 'b4cxb'
-test_usr_id = 420074357
 db = DB()
 
 with open('credential') as f:
     credential = yaml.load(f, Loader=yaml.FullLoader)
 
-with open('questions') as f:
-    questions = yaml.load(f, Loader=yaml.FullLoader)
+with open('en_string') as f:
+    strings = yaml.load(f, Loader=yaml.FullLoader)
+
+questions = [strings['q' + str(x)] for x in range(1, 6)]
 
 updater = Updater(credential['token'], use_context=True)
 tele = updater.bot
@@ -50,7 +29,7 @@ debug_group = tele.get_chat(-1001198682178)
 def askNext(usr, msg):
     idx = db.getQuestionIndex(usr, ask=True)
     if idx == len(questions):
-        return msg.reply_text(HELP2)
+        return msg.reply_text(strings['h2'])
     msg.reply_text(questions[idx])
 
 @log_on_fail(debug_group)
@@ -62,7 +41,7 @@ def handlePrivate(update, context):
     msg.forward(debug_group.id)
     usr = usr.username
     if not usr:
-        return msg.reply_text('Please Specify username before using me.')
+        return msg.reply_text(strings['e0'])
     os.system('mkdir photo > /dev/null 2>&1')
     photo = None
     profile = update.effective_user.get_profile_photos()
@@ -73,7 +52,7 @@ def handlePrivate(update, context):
     if photo:
         photo[0].get_file().download('photo/' + usr)
         if msg.photo:
-            msg.reply_text('Received/updated your photo.')
+            msg.reply_text(strings['p'])
     text = (msg.text or '').strip()
     if not text:
         return askNext(usr, msg)
@@ -82,22 +61,22 @@ def handlePrivate(update, context):
         if question in questions:
             index = questions.index(question)
             db.save(usr, index, text)
-            msg.reply_text('Your answer recorded.')
+            msg.reply_text(strings['r'])
             return askNext(usr, msg)
     idx = db.getQuestionIndex(usr)
     if idx == None:
-        msg.reply_text(HELP)
+        msg.reply_text(strings['h1'])
         return askNext(usr, msg)
     if idx == len(questions):
-        return msg.reply_text(HELP2)
+        return msg.reply_text(strings['h2'])
     db.save(usr, idx, text)
-    msg.reply_text('Your answer recorded.')
+    msg.reply_text(strings['r'])
     return askNext(usr, msg)
 
 def getCaption(usr):
     answers = [db.get(usr).get(x) for x in range(len(questions))]
     params = tuple(answers + [usr, usr, answers[4]])
-    return CAPTION % params
+    return strings['c'] % params
 
 def sendUsr(usr, msg):
     try:
@@ -119,11 +98,11 @@ def matchAll(text, keys):
 
 def checkProfileFinish(usr, msg):
     if not db.getQuestionIndex(usr) == len(questions):
-        msg.reply_text('Please finish your questionare first.')
+        msg.reply_text(strings['e1'])
         askNext(usr, msg)
         return False
     if not path.exists('photo/' + usr):
-        msg.reply_text('Please upload your photo first.')
+        msg.reply_text(strings['e2'])
         return False
     return True
 
@@ -134,7 +113,7 @@ def handleCommand(update, context):
     msg.forward(debug_group.id)
     usr = usr.username
     if not usr:
-        return msg.reply_text('Please specify username before using me.')
+        return msg.reply_text(strings['e0'])
     command, text = splitCommand(msg.text)
     if 'start' in command:
         msg.reply_text(HELP)
@@ -147,7 +126,7 @@ def handleCommand(update, context):
         return
     if 'preview' in command:
         sendUsr(usr, msg)
-        return msg.reply_text(HELP_AFTER_PREVIEW)
+        return msg.reply_text(strings['h3'])
     if 'get' in command:
         keys = text.split()
         usrs = [x for x in db.usrs() if matchAll(db.getRaw(x), keys)]
@@ -156,11 +135,11 @@ def handleCommand(update, context):
         if usr != test_usr:
             usrs = usrs[:LIMIT]
         if not usrs:
-            return msg.reply_text('No match user, please try again later.')
+            return msg.reply_text(strings['e4'])
         for x in usrs:
             sendUsr(x, msg)
         return
-    return msg.reply_text(HELP2)
+    return msg.reply_text(strings['h2'])
 
 dp = updater.dispatcher
 dp.add_handler(MessageHandler(Filters.private and (~Filters.command), handlePrivate))
