@@ -102,6 +102,12 @@ def sendUsr(usr, msg):
         caption = getCaption(usr), 
         parse_mode='Markdown')
 
+def matchAll(text, keys):
+    for key in keys:
+        if not key in text:
+            return False
+    return True
+
 @log_on_fail(debug_group)
 def handleCommand(update, context):
     usr = update.effective_user
@@ -120,8 +126,8 @@ def handleCommand(update, context):
         return msg.reply_text(HELP_AFTER_PREVIEW)
     if 'get' in command:
         keys = text.split()
-        print(db.usrs())
-        usrs = [x for x in db.usrs() if matchKey(db.getRaw(x), keys)]
+        print(db.usrs(), keys)
+        usrs = [x for x in db.usrs() if matchAll(db.getRaw(x), keys)]
         print(usrs)
         usrs = [x for x in usrs if x != usr]
         random.shuffle(usrs)
