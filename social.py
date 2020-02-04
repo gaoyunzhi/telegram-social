@@ -47,7 +47,6 @@ tele = updater.bot
 debug_group = tele.get_chat(-1001198682178)
 
 def askNext(usr, msg):
-    print('askNext')
     idx = db.getQuestionIndex(usr, ask=True)
     if idx == len(questions):
         return msg.reply_text(HELP2)
@@ -122,8 +121,9 @@ def handleCommand(update, context):
     if 'get' in command:
         keys = text.split()
         usrs = [x for x in db.usrs() if matchKey(db.getRaw(x), keys)]
+        print(usrs)
         usrs = [x for x in usrs if x != usr]
-        usrs = random.shuffle(usrs)
+        random.shuffle(usrs)
         if usr != test_usr:
             usrs = usrs[:LIMIT]
         if not usrs:
@@ -131,7 +131,10 @@ def handleCommand(update, context):
         for x in usrs:
             sendUsr(usr, msg)
         return
-    
+    if 'start' in command:
+        msg.reply_text(HELP)
+        return askNext(usr, msg)
+
 
 
 dp = updater.dispatcher
