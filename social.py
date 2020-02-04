@@ -32,10 +32,10 @@ debug_group = tele.get_chat(-1001198682178)
 
 def askNext(usr, msg):
     print('askNext')
-    idx = db.getQuestionIndex(usr)
+    idx = db.getQuestionIndex(usr, ask=True)
     if idx == len(questions):
         return
-    msg.reply(questions[idx])
+    msg.reply_text(questions[idx])
 
 @log_on_fail(debug_group)
 def handlePrivate(update, context):

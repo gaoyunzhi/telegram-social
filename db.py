@@ -10,9 +10,10 @@ class DB(object):
         self.db[usr][index] = text
         self._save()
 
-    def getQuestionIndex(self, usr):
-        if not user in self.db:
+    def getQuestionIndex(self, usr, ask=False):
+        if not usr in self.db and not ask:
             return None
+        self.db[usr] = self.db.get(usr, {})
         i = 0
         while True:
             if i in self.db[usr]:
