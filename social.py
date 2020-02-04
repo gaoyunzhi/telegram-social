@@ -34,7 +34,7 @@ def askNext(usr, msg):
     print('askNext')
     idx = db.getQuestionIndex(usr, ask=True)
     if idx == len(questions):
-        return
+        return msg.reply_text(HELP2)
     msg.reply_text(questions[idx])
 
 @log_on_fail(debug_group)
