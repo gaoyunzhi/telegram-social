@@ -4,11 +4,17 @@ class DB(object):
     def __init__(self):
         with open('mydb') as f:
             self.db = yaml.load(f, Loader=yaml.FullLoader)
+        with open('questions') as f:
+            self.questions = yaml.load(f, Loader=yaml.FullLoader)
 
     def save(self, usr, index, text):
         self.db[usr] = self.db.get(usr, {})
         self.db[usr][index] = text
         self._save()
+
+    def isProfileComplete(self, usr):
+        return self.getQuestionIndex(usr) == len(self.questions) and \
+            path.exists('photo/' + usr)
 
     def getQuestionIndex(self, usr, ask=False):
         if not usr in self.db and not ask:
@@ -21,8 +27,14 @@ class DB(object):
             else:
                 return i
 
-    def get(self,usr):
+    def get(self, usr):
         return self.db.get(usr, {})
+
+    def getRaw(self, usr):
+        return str(get(self, usr))
+
+    def usrs():
+        return [x for x in self.db.keys() if self.isProfileComplete(x)]
 
     def _save(self):
         with open('mydb', 'w') as f:

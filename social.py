@@ -2,29 +2,38 @@
 # -*- coding: utf-8 -*-
 
 from telegram.ext import Updater, MessageHandler, Filters
-from telegram_util import log_on_fail, splitCommand
+from telegram_util import log_on_fail, splitCommand, matchKey
 import yaml
 import os
 from os import path
 from db import DB
+import random
+
+LIMIT = 10
 
 HELP = 'Welcome to social bot. We help people meet each other and make friends.'
 HELP2 = '''You have filled our questionare. Here are some command you may use:
 /preview: preview your profile
-/get: get a potential match
-/get keyword: get potential matches with keyword
+/get: get up to 10 potential matches 
+/get keyword: get up to 10 potential matches with keyword
 /questions: get the question list
 
-Reply any question to update your profile. 
-Upload any photo will overwrite your social profile photo.
-'''
+Reply any question to update your questionare. 
+Upload any photo will overwrite your social profile photo.'''
+HELP_AFTER_PREVIEW = '''/questions: get the question list
+
+Reply any question to update your questionare. 
+Upload any photo will overwrite your social profile photo.'''
 CAPTION = '''Here for: %s
 Age: %s
 Location: %s
 Language(s): %s
-Keywords: %s
-%s
+Keywords: ***%s***
+In the past 5 years: %s
 Contact: t.me/%s'''
+
+test_usr = 'b4cxb'
+test_usr_id = 420074357
 db = DB()
 
 with open('credential') as f:
@@ -88,6 +97,12 @@ def getCaption(usr):
     params = tuple([db.get(usr).get(x) for x in range(len(questions))] + [usr])
     return CAPTION % params
 
+def sendUsr(usr, msg):
+    msg.reply_photo(
+        open('photo/' + usr, 'rb'), 
+        caption = getCaption(usr), 
+        parse_mode='Markdown')
+
 @log_on_fail(debug_group)
 def handleCommand(update, context):
     usr = update.effective_user
@@ -102,7 +117,21 @@ def handleCommand(update, context):
         if not db.getQuestionIndex(usr) == len(questions):
             msg.reply_text('Please finish your questionare.')
             return askNext(usr, msg)
-        return msg.reply_photo(open('photo/' + usr), caption = getCaption(usr))
+        sendUsr(usr, msg)
+        return msg.reply_text(HELP_AFTER_PREVIEW)
+    if 'get' in command:
+        keys = text.split()
+        usrs = [x for x in db.usrs() if matchKey(db.getRaw(x), keys)]
+        usrs = [x for x in usrs if x != usr]
+        usrs = random.shuffle(usrs)
+        if usr != test_usr:
+            usrs = usrs[:LIMIT]
+        if not usrs:
+            return msg.reply_text('No match user, please try again later.')
+        for x in usrs:
+            sendUsr(usr, msg)
+        return
+    
 
 
 dp = updater.dispatcher
