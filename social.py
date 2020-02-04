@@ -34,8 +34,7 @@ def askNext(usr, msg):
 	idx = db.getQuestionIndex(usr)
 	if idx == len(questions):
 		return
-	
-
+	msg.reply(questions[idx])
 
 @log_on_fail(debug_group)
 def handlePrivate(update, context):
