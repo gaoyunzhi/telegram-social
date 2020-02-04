@@ -20,7 +20,7 @@ with open('credential') as f:
 with open('en_string') as f:
     strings = yaml.load(f, Loader=yaml.FullLoader)
 
-questions = [strings['q' + str(x)] for x in range(1, db.NUM_Q)]
+questions = [strings['q' + str(x)] for x in range(1, db.NUM_Q + 1)]
 
 updater = Updater(credential['token'], use_context=True)
 tele = updater.bot
