@@ -5,25 +5,28 @@ q4: What language(s) do you speak?
 q5: (one more question) Give yourself three keywords (could be your interest, your personality, etc.).
 q6: (last question) What have you changed in the past 5 years? What stay the same?
 h1: Welcome to social bot. We help people meet each other and make friends.
-h2: 'You have filled our questionare. Here are some command you may use:
-/preview: preview your profile
-/get: get up to 10 potential matches 
-/get keyword: get up to 10 potential matches with keyword
-/questions: get the question list
+h2: |
+  You have filled our questionare. Here are some command you may use:
+  /preview: preview your profile
+  /get: get up to 10 potential matches 
+  /get keyword: get up to 10 potential matches with keyword
+  /questions: get the question list
 
-Reply any question to update your questionare. 
-Upload any photo will overwrite your social profile photo.'
-h3: '/questions: get the question list
-Reply any question to update your questionare. 
-Upload any photo will overwrite your social profile photo.'
-c: 'Here for: %s
-Age: %s
-Location: %s
-Language(s): %s
-Keywords: <b>%s</b>
-In the past 5 years: %s
-Contact: t.me/%s
-Contect Template: <i>Hey %s, I have seen you by @friends_social_bot, I''m also very interested in %s. May we be friends?</i>'
+  Reply any question to update your questionare. 
+  Upload any photo will overwrite your social profile photo.
+h3: |
+  /questions: get the question list
+  Reply any question to update your questionare. 
+  Upload any photo will overwrite your social profile photo.
+c: |
+  Here for: %s
+  Age: %s
+  Location: %s
+  Language(s): %s
+  Keywords: <b>%s</b>
+  In the past 5 years: %s
+  Contact: t.me/%s
+  Contect Template: <i>Hey %s, I have seen you by @friends_social_bot, I'm also very interested in %s. May we be friends?</i>
 p: Received/updated your photo.
 r: Your answer recorded.
 e1: Please finish your questionare first.

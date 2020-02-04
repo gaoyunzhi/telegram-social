@@ -3,6 +3,7 @@ from os import path
 
 class DB(object):
     NUM_Q = 6
+    
     def __init__(self):
         with open('mydb') as f:
             self.db = yaml.load(f, Loader=yaml.FullLoader)
@@ -13,7 +14,7 @@ class DB(object):
         self._save()
 
     def isProfileComplete(self, usr):
-        return self.getQuestionIndex(usr) == NUM_Q and \
+        return self.getQuestionIndex(usr) == self.NUM_Q and \
             path.exists('photo/' + usr)
 
     def getQuestionIndex(self, usr, ask=False):
