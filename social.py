@@ -31,7 +31,7 @@ Language(s): %s
 Keywords: <b>%s</b>
 In the past 5 years: %s
 Contact: t.me/%s
-Contect Template: <i>Hey, I have seen you by @friends_social_bot, I'm also very interested in %s. May we be friends?</i>'''
+Contect Template: <i>Hey %s, I have seen you by @friends_social_bot, I'm also very interested in %s. May we be friends?</i>'''
 
 test_usr = 'b4cxb'
 test_usr_id = 420074357
@@ -95,7 +95,7 @@ def handlePrivate(update, context):
 
 def getCaption(usr):
     answers = [db.get(usr).get(x) for x in range(len(questions))]
-    params = tuple(answers + [usr, answers[4]])
+    params = tuple(answers + [usr, usr, answers[4]])
     return CAPTION % params
 
 def sendUsr(usr, msg):
