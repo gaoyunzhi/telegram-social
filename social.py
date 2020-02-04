@@ -120,6 +120,7 @@ def handleCommand(update, context):
         return msg.reply_text(HELP_AFTER_PREVIEW)
     if 'get' in command:
         keys = text.split()
+        print(db.usrs())
         usrs = [x for x in db.usrs() if matchKey(db.getRaw(x), keys)]
         print(usrs)
         usrs = [x for x in usrs if x != usr]
