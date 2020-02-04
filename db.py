@@ -32,7 +32,7 @@ class DB(object):
         return self.db.get(usr, {})
 
     def getRaw(self, usr):
-        return str(self.get(usr))
+        return str(self.get(usr)) + usr
 
     def usrs(self):
         return [x for x in self.db.keys() if self.isProfileComplete(x)]
