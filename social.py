@@ -103,6 +103,8 @@ def sendUsr(usr, msg):
         parse_mode='Markdown')
 
 def matchAll(text, keys):
+    text = text.lower()
+    keys = [x.lower() for x in keys]
     for key in keys:
         if not key in text:
             return False
@@ -126,9 +128,8 @@ def handleCommand(update, context):
         return msg.reply_text(HELP_AFTER_PREVIEW)
     if 'get' in command:
         keys = text.split()
-        print(db.usrs(), keys)
+        print(keys)
         usrs = [x for x in db.usrs() if matchAll(db.getRaw(x), keys)]
-        print(usrs)
         usrs = [x for x in usrs if x != usr]
         random.shuffle(usrs)
         if usr != test_usr:
@@ -136,7 +137,7 @@ def handleCommand(update, context):
         if not usrs:
             return msg.reply_text('No match user, please try again later.')
         for x in usrs:
-            sendUsr(usr, msg)
+            sendUsr(x, msg)
         return
     if 'start' in command:
         msg.reply_text(HELP)
