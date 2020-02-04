@@ -136,7 +136,7 @@ def handleCommand(update, context):
             msg.reply_text(q)
         return
     if not checkProfileFinish(usr, msg):
-            return
+        return
     if 'preview' in command:
         sendUsr(usr, msg)
         return msg.reply_text(HELP_AFTER_PREVIEW)
