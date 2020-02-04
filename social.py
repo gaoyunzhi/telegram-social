@@ -28,7 +28,7 @@ CAPTION = '''Here for: %s
 Age: %s
 Location: %s
 Language(s): %s
-Keywords: ***%s***
+Keywords: <b>%s</b>
 In the past 5 years: %s
 Contact: t.me/%s'''
 
@@ -101,7 +101,7 @@ def sendUsr(usr, msg):
         msg.reply_photo(
             open('photo/' + usr, 'rb'), 
             caption = getCaption(usr), 
-            parse_mode='Markdown')
+            parse_mode='HTML')
     except Exception as e:
         debug_group.send_message(str(e))
         debug_group.send_message('can not send profile for user: ' + usr)
