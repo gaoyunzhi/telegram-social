@@ -97,10 +97,14 @@ def getCaption(usr):
     return CAPTION % params
 
 def sendUsr(usr, msg):
-    msg.reply_photo(
-        open('photo/' + usr, 'rb'), 
-        caption = getCaption(usr), 
-        parse_mode='Markdown')
+    try:
+        msg.reply_photo(
+            open('photo/' + usr, 'rb'), 
+            caption = getCaption(usr), 
+            parse_mode='Markdown')
+    except Exception as e:
+        debug_group.send_message(str(e))
+        debug_group.send_message('can not send profile for user: ' + usr)
 
 def matchAll(text, keys):
     text = text.lower()
