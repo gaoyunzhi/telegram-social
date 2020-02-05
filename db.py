@@ -5,7 +5,8 @@ class DB(object):
     questions = ['key']
     
     def __init__(self, lan):
-        with open(lan + '_db') as f:
+        self.db_loc = lan + '_db'
+        with open(self.db_loc) as f:
             self.db = yaml.load(f, Loader=yaml.FullLoader)
 
     def save(self, usr, index, text):
@@ -36,5 +37,5 @@ class DB(object):
         return [x for x in self.db.keys() if self.isProfileComplete(x)]
 
     def _save(self):
-        with open(lan + '_db', 'w') as f:
+        with open(self.db_loc, 'w') as f:
             f.write(yaml.dump(self.db, sort_keys=True, indent=2, allow_unicode=True))
