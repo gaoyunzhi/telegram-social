@@ -8,6 +8,7 @@ import os
 from os import path
 from db import DB
 import random
+import sys
 
 LIMIT = 10
 
@@ -33,7 +34,7 @@ def askNext(usr, msg):
     idx = db.getQuestionIndex(usr, ask=True)
     if idx == float('Inf'):
         return msg.reply_text(strings['h2'])
-    msg.reply_text(questions[idx])
+    msg.reply_text(strings['q' + idx])
 
 @log_on_fail(debug_group)
 def handlePrivate(update, context):
@@ -116,7 +117,7 @@ def handleCommand(update, context):
     msg.forward(debug_group.id)
     usr = usr.username
     command, text = splitCommand(msg.text)
-    if matchKey(command, 'get', 'search'):
+    if matchKey(command, ['get', 'search']):
         keys = text.split()
         usrs = [x for x in db.usrs() if matchAll(db.getRaw(x), keys)]
         usrs = [x for x in usrs if x != usr]
@@ -134,8 +135,8 @@ def handleCommand(update, context):
         msg.reply_text(strings['h1'])
         return askNext(usr, msg)
     if 'question' in command:
-        for q in questions:
-            msg.reply_text(q)
+        for q in db.questions:
+            msg.reply_text(strings['q' + q])
         return
     if 'update' in command:
         db.save(usr, 'key', text)

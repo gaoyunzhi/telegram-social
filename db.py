@@ -20,6 +20,7 @@ class DB(object):
     def getQuestionIndex(self, usr, ask=False):
         if not usr in self.db and not ask:
             return -1
+        self.db[usr] = self.db.get(usr, {})
         for q in self.questions:
             if q not in self.db[usr]:
                 return q
