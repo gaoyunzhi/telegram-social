@@ -1,5 +1,4 @@
 import yaml
-from os import path
 
 class DB(object):
     questions = ['key']
@@ -15,8 +14,7 @@ class DB(object):
         self._save()
 
     def isProfileComplete(self, usr):
-        return self.getQuestionIndex(usr) == float('Inf') and \
-            path.exists('photo/' + usr)
+        return self.getQuestionIndex(usr) == float('Inf')
 
     def getQuestionIndex(self, usr, ask=False):
         if not usr in self.db and not ask:

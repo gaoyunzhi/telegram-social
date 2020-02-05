@@ -14,7 +14,7 @@ c: |
   Keywords: <b>%s</b>
   Contact: t.me/%s
 
-  <b>Contect Template:</b> <i>Hey %s, I have seen you by @friends_social_bot, I'm also very interested in %s. May we be friends?</i>
+  <b>Message Template:</b> <i>Hey %s, I have seen you by @friends_social_bot, I'm also very interested in %s. May we be friends?</i>
 p: Received/updated your photo.
 r: Your answer recorded.
 e1: Please finish your questionare first.

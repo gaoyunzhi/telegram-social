@@ -84,10 +84,13 @@ def getCaption(usr):
 
 def sendUsr(usr, msg):
     try:
-        msg.reply_photo(
-            open('photo/' + usr, 'rb'), 
-            caption = getCaption(usr), 
-            parse_mode='HTML')
+        if path.exists('photo/' + usr):
+            msg.reply_photo(
+                open('photo/' + usr, 'rb'), 
+                caption = getCaption(usr), 
+                parse_mode='HTML')
+        else:
+            msg.reply_text(getCaption(usr), parse_mode='HTML')
     except Exception as e:
         debug_group.send_message(str(e))
         debug_group.send_message('can not send profile for user: ' + usr)
