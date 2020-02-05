@@ -3,6 +3,7 @@ import sys
 
 def kill():
 	os.system("ps aux | grep ython | grep social | awk '{print $2}' | xargs kill -9")
+	os.system("ps aux | grep ython | grep social | awk '{print $2}' | xargs kill -9")
 
 def setup(mode):
 	if mode == 'kill':

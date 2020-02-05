@@ -12,12 +12,12 @@ import random
 LIMIT = 10
 
 test_usr = 'b4cxb'
-db = DB()
 
 if 'chinese' in str(sys.argv):
     lan = 'zh'
 else:
     lan = 'en'
+db = DB(lan)
 
 with open('credential') as f:
     credential = yaml.load(f, Loader=yaml.FullLoader)
@@ -31,7 +31,7 @@ debug_group = tele.get_chat(-1001198682178)
 
 def askNext(usr, msg):
     idx = db.getQuestionIndex(usr, ask=True)
-    if idx == db.NUM_Q:
+    if idx == float('Inf'):
         return msg.reply_text(strings['h2'])
     msg.reply_text(questions[idx])
 
@@ -61,24 +61,24 @@ def handlePrivate(update, context):
         return askNext(usr, msg)
     if msg.reply_to_message:
         question = msg.reply_to_message.text
-        if question in questions:
-            index = questions.index(question)
-            db.save(usr, index, text)
-            msg.reply_text(strings['r'])
-            return askNext(usr, msg)
+        for index in db.questions:
+            if question == strings['q' + index]:
+                db.save(usr, index, text)
+                msg.reply_text(strings['r'])
+                return askNext(usr, msg)
     idx = db.getQuestionIndex(usr)
-    if idx == None:
+    if idx == -1:
         msg.reply_text(strings['h1'])
         return askNext(usr, msg)
-    if idx == db.NUM_Q:
+    if idx == float('Inf'):
         return msg.reply_text(strings['h2'])
     db.save(usr, idx, text)
     msg.reply_text(strings['r'])
     return askNext(usr, msg)
 
 def getCaption(usr):
-    answers = [db.get(usr).get(x) for x in range(db.NUM_Q)]
-    params = tuple(answers + [usr, usr, answers[4]])
+    answers = db.get(usr)
+    params = (answers['key'], usr, usr, answers['key'])
     return strings['c'] % params
 
 def sendUsr(usr, msg):
@@ -100,7 +100,7 @@ def matchAll(text, keys):
     return True
 
 def checkProfileFinish(usr, msg):
-    if not db.getQuestionIndex(usr) == db.NUM_Q:
+    if not db.getQuestionIndex(usr) == float('Inf'):
         msg.reply_text(strings['e1'])
         askNext(usr, msg)
         return False
