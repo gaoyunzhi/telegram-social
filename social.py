@@ -116,7 +116,7 @@ def handleCommand(update, context):
         return msg.reply_text(strings['e0'])
     command, text = splitCommand(msg.text)
     if 'start' in command:
-        msg.reply_text(HELP)
+        msg.reply_text(strings['h1'])
         return askNext(usr, msg)
     if 'questions' in command:
         for q in questions:
