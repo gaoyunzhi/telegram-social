@@ -112,16 +112,7 @@ def handleCommand(update, context):
     msg = update.effective_message
     msg.forward(debug_group.id)
     usr = usr.username
-    if not usr:
-        return msg.reply_text(strings['e0'])
     command, text = splitCommand(msg.text)
-    if 'start' in command:
-        msg.reply_text(strings['h1'])
-        return askNext(usr, msg)
-    if 'questions' in command:
-        for q in questions:
-            msg.reply_text(q)
-        return
     if 'get' in command:
         keys = text.split()
         usrs = [x for x in db.usrs() if matchAll(db.getRaw(x), keys)]
@@ -133,6 +124,15 @@ def handleCommand(update, context):
             return msg.reply_text(strings['e4'])
         for x in usrs:
             sendUsr(x, msg)
+        return
+    if not usr:
+        return msg.reply_text(strings['e0'])
+    if 'start' in command:
+        msg.reply_text(strings['h1'])
+        return askNext(usr, msg)
+    if 'questions' in command:
+        for q in questions:
+            msg.reply_text(q)
         return
     if not checkProfileFinish(usr, msg):
         return

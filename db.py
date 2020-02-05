@@ -14,7 +14,8 @@ class DB(object):
         self._save()
 
     def isProfileComplete(self, usr):
-        return self.getQuestionIndex(usr) == self.NUM_Q and \
+        # does not need to answer last question
+        return self.getQuestionIndex(usr) >= self.NUM_Q - 1 and \
             path.exists('photo/' + usr)
 
     def getQuestionIndex(self, usr, ask=False):
