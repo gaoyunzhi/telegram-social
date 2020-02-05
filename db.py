@@ -2,10 +2,10 @@ import yaml
 from os import path
 
 class DB(object):
-    NUM_Q = 6
+    questions = ['key']
     
-    def __init__(self):
-        with open('mydb') as f:
+    def __init__(self, lan):
+        with open(lan + '_db') as f:
             self.db = yaml.load(f, Loader=yaml.FullLoader)
 
     def save(self, usr, index, text):
@@ -14,20 +14,16 @@ class DB(object):
         self._save()
 
     def isProfileComplete(self, usr):
-        # does not need to answer last question
-        return self.getQuestionIndex(usr) >= self.NUM_Q - 1 and \
+        return self.getQuestionIndex(usr) == float('Inf') and \
             path.exists('photo/' + usr)
 
     def getQuestionIndex(self, usr, ask=False):
         if not usr in self.db and not ask:
-            return None
-        self.db[usr] = self.db.get(usr, {})
-        i = 0
-        while True:
-            if i in self.db[usr]:
-                i += 1
-            else:
-                return i
+            return -1
+        for q in self.questions:
+            if q not in self.db[usr]:
+                return q
+        return float('Inf')
 
     def get(self, usr):
         return self.db.get(usr, {})
@@ -39,5 +35,5 @@ class DB(object):
         return [x for x in self.db.keys() if self.isProfileComplete(x)]
 
     def _save(self):
-        with open('mydb', 'w') as f:
+        with open(lan + '_db', 'w') as f:
             f.write(yaml.dump(self.db, sort_keys=True, indent=2, allow_unicode=True))

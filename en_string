@@ -1,34 +1,23 @@
-q1: Why you are here? (dating, find new friends, etc)
-q2: How old are you?
-q3: Where do you live?
-q4: What language(s) do you speak?
-q5: (one more question) Give yourself three keywords (could be your interest, your personality, etc.).
-q6: (last question) What have you changed in the past 5 years? What stay the same?
+qkey: Describe yourself by a few keywords. (Could be your interest, job, location, hometown, etc.)
 h1: Welcome to social bot. We help people meet each other and make friends.
 h2: |
   You have filled our questionare. Here are some command you may use:
   /preview: preview your profile
   /get: get up to 10 potential matches 
-  /get keyword: get up to 10 potential matches with keyword
-  /questions: get the question list
+  /search keyword: get up to 10 potential matches with keyword
+  /question: get the question list
+  /update new_answer: update your answer
 
-  Reply any question to update your questionare. 
-  Upload any photo will overwrite your social profile photo.
-h3: |
-  Reply any question to update your questionare. 
-  Upload any photo will overwrite your social profile photo.
+  Reply the question to update your answer. 
+  Upload photo to update your social profile photo.
 c: |
-  Here for: %s
-  Age: %s
-  Location: %s
-  Language(s): %s
   Keywords: <b>%s</b>
-  In the past 5 years: %s
   Contact: t.me/%s
-  Contect Template: <i>Hey %s, I have seen you by @friends_social_bot, I'm also very interested in %s. May we be friends?</i>
+
+  <b>Contect Template:</b> <i>Hey %s, I have seen you by @friends_social_bot, I'm also very interested in %s. May we be friends?</i>
 p: Received/updated your photo.
 r: Your answer recorded.
 e1: Please finish your questionare first.
 e2: Please upload your photo first.
-e0: Please specify username before using me.
-e4: No match user, please try again later.
+e0: Please specify Telegram username before using me.
+e4: No match user.

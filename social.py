@@ -14,15 +14,18 @@ LIMIT = 10
 test_usr = 'b4cxb'
 db = DB()
 
+if 'chinese' in str(sys.argv):
+    lan = 'zh'
+else:
+    lan = 'en'
+
 with open('credential') as f:
     credential = yaml.load(f, Loader=yaml.FullLoader)
 
-with open('en_string') as f:
+with open(lan + '_string') as f:
     strings = yaml.load(f, Loader=yaml.FullLoader)
 
-questions = [strings['q' + str(x)] for x in range(1, db.NUM_Q + 1)]
-
-updater = Updater(credential['token'], use_context=True)
+updater = Updater(credential[lan + '_token'], use_context=True)
 tele = updater.bot
 debug_group = tele.get_chat(-1001198682178)
 
@@ -113,7 +116,7 @@ def handleCommand(update, context):
     msg.forward(debug_group.id)
     usr = usr.username
     command, text = splitCommand(msg.text)
-    if 'get' in command:
+    if matchKey(command, 'get', 'search'):
         keys = text.split()
         usrs = [x for x in db.usrs() if matchAll(db.getRaw(x), keys)]
         usrs = [x for x in usrs if x != usr]
@@ -130,15 +133,16 @@ def handleCommand(update, context):
     if 'start' in command:
         msg.reply_text(strings['h1'])
         return askNext(usr, msg)
-    if 'questions' in command:
+    if 'question' in command:
         for q in questions:
             msg.reply_text(q)
         return
+    if 'update' in command:
+        db.save(usr, 'key', text)
     if not checkProfileFinish(usr, msg):
         return
     if 'preview' in command:
         sendUsr(usr, msg)
-        return msg.reply_text(strings['h3'])
     return msg.reply_text(strings['h2'])
 
 dp = updater.dispatcher
