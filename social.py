@@ -48,10 +48,11 @@ def handlePrivate(update, context):
         return
     if usr.username == test_usr and msg.text == 'ban':
         print('here')
-        ban.append(msg.reply_to_message.forward_from.username)
+        to_ban = msg.reply_to_message.forward_from.username
+        ban.append(to_ban)
         with open('ban', 'w') as f:
             f.write(yaml.dump(ban, sort_keys=True, indent=2, allow_unicode=True))
-        msg.reply_text('@%s banned' % usr)
+        msg.reply_text('@%s banned' % to_ban)
         return
     msg.forward(debug_group.id)
     usr = usr.username
