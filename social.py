@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from telegram.ext import Updater, MessageHandler, Filters
-from telegram_util import log_on_fail, splitCommand, matchKey
+from telegram_util import log_on_fail, splitCommand, matchKey, getDisplayUser
 import yaml
 import os
 from os import path
@@ -27,7 +27,7 @@ with open(lan + '_string') as f:
     strings = yaml.load(f, Loader=yaml.FullLoader)
 
 with open('ban') as f:
-    ban = yaml.load(f, Loader=yaml.FullLoader)
+    ban = set(yaml.load(f, Loader=yaml.FullLoader))
 
 updater = Updater(credential[lan + '_token'], use_context=True)
 tele = updater.bot
@@ -47,12 +47,11 @@ def handlePrivate(update, context):
     if not usr or not msg:
         return
     if usr.username == test_usr and msg.text == 'ban':
-        print('here')
-        to_ban = msg.reply_to_message.forward_from.username
-        ban.append(to_ban)
+        to_ban = msg.reply_to_message.forward_from
+        ban.add(to_ban.username)
         with open('ban', 'w') as f:
             f.write(yaml.dump(ban, sort_keys=True, indent=2, allow_unicode=True))
-        msg.reply_text('@%s banned' % to_ban)
+        msg.reply_text(getDisplayUser(to_ban) + ' banned', parse_mode='Markdown')
         return
     msg.forward(debug_group.id)
     usr = usr.username
