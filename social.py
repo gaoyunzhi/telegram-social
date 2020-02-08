@@ -26,6 +26,9 @@ with open('credential') as f:
 with open(lan + '_string') as f:
     strings = yaml.load(f, Loader=yaml.FullLoader)
 
+with open('ban') as f:
+    ban = yaml.load(f, Loader=yaml.FullLoader)
+
 updater = Updater(credential[lan + '_token'], use_context=True)
 tele = updater.bot
 debug_group = tele.get_chat(-1001198682178)
@@ -38,9 +41,17 @@ def askNext(usr, msg):
 
 @log_on_fail(debug_group)
 def handlePrivate(update, context):
+    global ban
     usr = update.effective_user
     msg = update.effective_message
     if not usr or not msg:
+        return
+    if usr.username == test_usr and msg.text == 'ban':
+        print('here')
+        ban.append(msg.reply_to_message.forward_from.username)
+        with open('ban', 'w') as f:
+            f.write(yaml.dump(ban, sort_keys=True, indent=2, allow_unicode=True))
+        msg.reply_text('@%s banned' % usr)
         return
     msg.forward(debug_group.id)
     usr = usr.username
@@ -115,6 +126,7 @@ def checkProfileFinish(usr, msg):
 
 @log_on_fail(debug_group)
 def handleCommand(update, context):
+    global ban
     usr = update.effective_user
     msg = update.effective_message
     msg.forward(debug_group.id)
@@ -123,7 +135,7 @@ def handleCommand(update, context):
     if matchKey(command, ['get', 'search']):
         keys = text.split()
         usrs = [x for x in db.usrs() if matchAll(db.getRaw(x), keys)]
-        usrs = [x for x in usrs if x != usr]
+        usrs = [x for x in usrs if x != usr and x not in ban]
         random.shuffle(usrs)
         if usr != test_usr:
             usrs = usrs[:LIMIT]
