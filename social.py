@@ -53,7 +53,6 @@ def handlePrivate(update, context):
             f.write(yaml.dump(ban, sort_keys=True, indent=2, allow_unicode=True))
         msg.reply_text(getDisplayUser(to_ban) + ' banned', parse_mode='Markdown')
         return
-    msg.forward(debug_group.id)
     usr = usr.username
     if not usr:
         return msg.reply_text(strings['e0'])
